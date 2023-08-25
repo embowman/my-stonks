@@ -1,36 +1,30 @@
-import { useState, useContext } from "react";
-import { userContext } from "../App.jsx";
-
-import { Link } from "react-router-dom";
-// import React from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../utilities.jsx";
 import CardHeader from "../components/CardHeader.jsx";
 
-// RegisterPage.jsx
-import { postData } from "../utilities.jsx";
-// ...
-// const navigate = useNavigate();
-
-const register = (e) => {
-  e.preventDefault();
-  let response = postData('register/');
-  console.log(response);
-  let user = response.data.user;
-  let token = response.data.token;
-  // Store the token securely (e.g., in localStorage or HttpOnly cookies)
-  localStorage.setItem("token", token);
-  // api.defaults.headers.common["Authorization"] = `Token ${token}`;
-  // set the user using with useContext to allow all other pages that need user information
-  // setUser(user);
-  // navigate("/home");
-};
-
-// ...
-
-export default function RegisterForm() {
+export default function RegisterPage({ user }) {
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const { setUser } = useContext(userContext);
+    const navigate = useNavigate();
+
+    const register = async (e, u) => {
+        e.preventDefault();
+        let response = await api.post("register/", {
+            'email': userName,
+            'password': password,
+        });
+        // console.log(response);
+        let user = response.data.user;
+        let token = response.data.token;
+
+        localStorage.setItem("token", token);
+        api.defaults.headers.common["Authorization"] = `Token ${token}`;
+
+        user = u;
+        navigate("/login");
+    };
   
     return (
         <>
@@ -40,8 +34,8 @@ export default function RegisterForm() {
             <CardHeader title="Register" />
 
             <div className="card-body">
-                {/* had onSubmit register() */}
-                <form onSubmit={(e) => setUser(userName)}>
+
+                <form onSubmit={(e) => register(e, user)}>
 
                     {/* Input email */}
                     <div className="form-body">
@@ -52,12 +46,13 @@ export default function RegisterForm() {
                           id="emailInput"
                           className="form-control"
                         />
-                        <label for="emailInput" className="form-label">Email</label>
+
+                        <label htmlFor="emailInput" className="form-label">Email</label>
                     </div>
 
                     {/* <div className="form-body">
                         <input type="email" id="confirmEmailInput" className="form-control" />
-                        <label for="confirmEmailInput" className="form-label">Confirm Email</label>
+                        <label htmlFor="confirmEmailInput" className="form-label">Confirm Email</label>
                     </div> */}
 
                     {/* Input password */}
@@ -69,12 +64,13 @@ export default function RegisterForm() {
                           id="passwordInput"
                           className="form-control"
                         />
-                        <label for="passwordInput" className="form-label">Password</label>
+
+                        <label htmlFor="passwordInput" className="form-label">Password</label>
                     </div>
 
                     {/* <div className="form-body">
                         <input type="password" id="confirmPasswordInput" className="form-control" />
-                        <label for="confirmPasswordInput" className="form-label">Confirm Password</label>
+                        <label htmlFor="confirmPasswordInput" className="form-label">Confirm Password</label>
                     </div> */}
 
                     {/* Button */}

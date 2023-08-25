@@ -1,9 +1,31 @@
-// import { useState } from "react";
-import { Link } from "react-router-dom";
-import React from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../utilities.jsx";
 import CardHeader from "../components/CardHeader.jsx";
 
-export default function LoginForm() {
+export default function LoginPage({ user }) {
+
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const login = async (e, u) => {
+        e.preventDefault();
+        let response = await api.post("login/", {
+            'email': userName,
+            'password': password,
+        });
+
+        // console.log(response);
+        let user = response.data.user;
+        let token = response.data.token;
+
+        localStorage.setItem("token", token);
+        api.defaults.headers.common["Authorization"] = `Token ${token}`;
+
+        user = u;
+        navigate("/");
+    };
 
     return (
         <>
@@ -14,18 +36,32 @@ export default function LoginForm() {
 
             <div className="card-body">
 
-                <form>
+                <form onSubmit={(e) => login(e, user)}>
 
                     {/* Input email */}
                     <div className="form-body">
-                        <input type="email" id="emailInput" className="form-control" />
-                        <label for="emailInput" className="form-label">Email</label>
+                        <input 
+                          type="email"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          id="emailInput"
+                          className="form-control"
+                        />
+
+                        <label htmlFor="emailInput" className="form-label">Email</label>
                     </div>
 
                     {/* Input password */}
                     <div className="form-body">
-                        <input type="password" id="passwordInput" className="form-control" />
-                        <label for="passwordInput" className="form-label">Password</label>
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          id="passwordInput"
+                          className="form-control"
+                        />
+
+                        <label htmlFor="passwordInput" className="form-label">Password</label>
                     </div>
 
                     {/* Button */}
