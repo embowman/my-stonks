@@ -1,12 +1,10 @@
-// import { useState } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
-
-    return (
-      <div>
-        <h2>Too Bad</h2>
-      </div>
+	return (
+		<div>
+        	<h2>Too Bad</h2>
+        	<Link to="/login">Go Back</Link>
+    	</div>
     );
-  }
-  
+}

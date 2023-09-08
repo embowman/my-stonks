@@ -1,3 +1,3 @@
 export default function Error404Page() {
-    return <div>Error 404: Not Found</div>;
+    return <h2>Error 404: Not Found</h2>;
 }

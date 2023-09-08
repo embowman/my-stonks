@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import Error404Page from "./pages/Error404Page.jsx";
-import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import ForgotPage from "./pages/ForgotPage.jsx";
+import AccountPage from "./pages/AccountPage.jsx";
+import WatchlistPage from "./pages/WatchlistPage.jsx";
+import StonkPage from "./pages/StonkPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +16,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <LoginPage />,
       },
       {
         path: "login",
@@ -28,14 +30,18 @@ const router = createBrowserRouter([
         path: "forgot",
         element: <ForgotPage />,
       },
-    //   {
-    //     path: "pokemon/:id",
-    //     element: <PokemonPage />,
-    //   },
-    //   {
-    //     path: "pokemon/missing/:id",
-    //     element: <MissingPokemonPage />,
-    //   },
+      {
+        path: "account",
+        element: <AccountPage />,
+      },
+      {
+        path: "watchlist",
+        element: <WatchlistPage />,
+      },
+      {
+        path: "watchlist/:symbol",
+        element: <StonkPage />,
+      },
     ],
   },
 ]);

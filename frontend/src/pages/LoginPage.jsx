@@ -1,49 +1,54 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { api } from "../utilities.jsx";
 import CardHeader from "../components/CardHeader.jsx";
 
-export default function LoginPage({ user }) {
+export default function LoginPage() {
+    const [[user, setUser], [watchlist, setWatchlist]] = useOutletContext();
 
-    const [userName, setUserName] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const login = async (e, u) => {
+    const login = async (e) => {
         e.preventDefault();
-        let response = await api.post("login/", {
-            'email': userName,
+        const response = await api.post("login/", {
+            'email': username,
             'password': password,
-        });
+        })
+        .catch(() => {
+            alert("Incorrect Credentials");
+        })
 
-        // console.log(response);
-        let user = response.data.user;
-        let token = response.data.token;
+        if (response) {
+            const user = response.data.user;
+            const token = response.data.token;
 
-        localStorage.setItem("token", token);
-        api.defaults.headers.common["Authorization"] = `Token ${token}`;
+            setUser(user);
 
-        user = u;
-        navigate("/");
+            localStorage.setItem("token", token);
+            api.defaults.headers.common["Authorization"] = `Token ${token}`;
+
+            navigate("/watchlist");
+        }
     };
 
     return (
         <>
-        <h2>Login</h2>
         <div className="card">
 
             <CardHeader title="Login" />
 
             <div className="card-body">
 
-                <form onSubmit={(e) => login(e, user)}>
+                <form onSubmit={(e) => login(e)}>
 
                     {/* Input email */}
                     <div className="form-body">
                         <input 
                           type="email"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
                           id="emailInput"
                           className="form-control"
                         />
@@ -66,7 +71,7 @@ export default function LoginPage({ user }) {
 
                     {/* Button */}
                     <div className="form-body">
-                        <button className="form-button" type="submit">Login</button>
+                        <button className="card-button" type="submit">Login</button>
                     </div>
 
                 </form>
